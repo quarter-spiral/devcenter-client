@@ -1,4 +1,4 @@
-# 0.0.3 WIP
+# 0.0.3
 
 * Makes it possible to retrieve a game's platform data
 
