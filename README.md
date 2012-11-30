@@ -22,3 +22,9 @@ client.list_games
 ```ruby
 client.list_games([game_uuid1, game_uuid2])
 ```
+
+#### Get platform data of a game
+
+```ruby
+game = client.get_game(token, uuid) # => {'name' => 'Test Game', 'configuration' => {}, …}
+```

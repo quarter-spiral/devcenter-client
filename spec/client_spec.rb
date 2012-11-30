@@ -25,6 +25,8 @@ ENV['QS_OAUTH_CLIENT_SECRET'] = app[:secret]
 
 describe Graph::Client do
   before do
+    wipe_graph!
+
     @client = Devcenter::Client.new('http://example.com')
 
     adapter = Service::Client::Adapter::Faraday.new(adapter: [:rack, API_APP])
@@ -35,14 +37,12 @@ describe Graph::Client do
     @developer = UUID.new.generate
     @connection.graph.add_role(@developer, app_token, 'developer')
 
-
     @game_options1 = {:name => "Test Game 1", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}}
     @game1 = Devcenter::Backend::Game.create(app_token, @game_options1)
     @game_options2 = {:name => "Test Game 2", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}}
     @game2 = Devcenter::Backend::Game.create(app_token, @game_options2)
     @game_options3 = {:name => "Test Game 3", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}}
     @game3 = Devcenter::Backend::Game.create(app_token, @game_options3)
-
   end
 
   it "can list public game info" do
@@ -62,5 +62,12 @@ describe Graph::Client do
     games = @client.list_games([@game2.uuid])
     games.size.must_equal 1
     games.detect {|g| g['uuid'] == @game2.uuid}.wont_be_nil
+  end
+
+  it "can retrieve a game's platform data" do
+    game = @client.get_game(app_token, @game1.uuid)
+    game['name'].must_equal 'Test Game 1'
+    game['configuration']['type'].must_equal 'html5'
+    game['venues']['spiral-galaxy']['enabled'].must_equal true
   end
 end

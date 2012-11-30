@@ -11,14 +11,21 @@ module Devcenter
     def initialize(url)
       @client = Service::Client.new(url)
 
-      # Games
-      @client.urls.add(:games, :get,    "/#{API_VERSION}/public/games")
+      # Public Games
+      @client.urls.add(:games_public, :get, "/#{API_VERSION}/public/games")
+
+      # Platform Data Games
+      @client.urls.add(:game, :get, "/#{API_VERSION}/games/:uuid:")
     end
 
     def list_games(uuids = nil)
       options = {}
       options[:games] = uuids if uuids
-      @client.get(@client.urls.games(), nil, options).data['games']
+      @client.get(@client.urls.games_public(), nil, options).data['games']
+    end
+
+    def get_game(token, uuid)
+      @client.get(@client.urls.game(uuid: uuid), token).data
     end
   end
 end
