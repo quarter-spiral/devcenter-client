@@ -1,3 +1,7 @@
+# 0.0.4 WIP
+
+* Updates dependencies
+
 # 0.0.3
 
 * Makes it possible to retrieve a game's platform data
